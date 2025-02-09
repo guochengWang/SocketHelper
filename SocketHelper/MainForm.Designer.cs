@@ -288,9 +288,9 @@
             this.labelControl3.Appearance.Options.UseFont = true;
             this.labelControl3.Location = new System.Drawing.Point(10, 129);
             this.labelControl3.Name = "labelControl3";
-            this.labelControl3.Size = new System.Drawing.Size(84, 17);
+            this.labelControl3.Size = new System.Drawing.Size(56, 17);
             this.labelControl3.TabIndex = 8;
-            this.labelControl3.Text = "远程主机端口";
+            this.labelControl3.Text = "主机端口";
             // 
             // labelControl2
             // 
@@ -298,9 +298,9 @@
             this.labelControl2.Appearance.Options.UseFont = true;
             this.labelControl2.Location = new System.Drawing.Point(10, 74);
             this.labelControl2.Name = "labelControl2";
-            this.labelControl2.Size = new System.Drawing.Size(84, 17);
+            this.labelControl2.Size = new System.Drawing.Size(56, 17);
             this.labelControl2.TabIndex = 7;
-            this.labelControl2.Text = "远程主机地址";
+            this.labelControl2.Text = "主机地址";
             // 
             // agreeType
             // 
