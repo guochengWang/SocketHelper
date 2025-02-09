@@ -22,15 +22,13 @@ namespace SocketHelper
 
         // 是否打开关闭标志
         private bool _isOpen = false;
-        
+
         // 生成日志文件的路径
         private string logFilePath = "";
         private Thread CycleThread;
-        
+
         // 是否循坏发送
         private bool _isCycle = false;
-
-
         private TcpClient tcpClient = new TcpClient();
         private TcpService tcpServer = new TcpService();
 
@@ -59,23 +57,17 @@ namespace SocketHelper
 
             saveLogThread.Start();
         }
-
         private void InitData()
         {
             // 填充默认值
             agreeType.Properties.Items.AddRange(Faker.GetTypes());
             IPAddress.Properties.Items.AddRange(Faker.GetIps());
-           
             // 默认选中
             agreeType.SelectedIndex = 0;
             IPAddress.SelectedIndex = 0;
-           
-
             dataLog.AppendText(Environment.NewLine);
             sendInfo.AppendText(Environment.NewLine);
         }
-        
-     
 
         /// <summary>
         /// 清除接收
@@ -87,7 +79,6 @@ namespace SocketHelper
             dataLog.Text = "";
         }
 
-       
         /// <summary>
         ///  是否可以选中
         /// </summary>
@@ -120,7 +111,6 @@ namespace SocketHelper
             StringExtension.recLog = recLog.Checked;
         }
 
-     
         /// <summary>
         /// 点击发送
         /// </summary>
@@ -149,37 +139,35 @@ namespace SocketHelper
                 if (result.Length > 0)
                 {
                     // 是否生成随机数
-                    if(randomCheck.Checked)
+                    if (randomCheck.Checked)
                     {
-                        result += "-----" + new Random().Next(1, 999).ToString();
+                        result += new Random().Next(1, 999).ToString();
                     }
-
-                  
                     // 选择循环周期
-                    if(selectCycle.Checked)
+                    if (selectCycle.Checked)
                     {
                         CycleThread = new Thread(() =>
                         {
-                            while (_isCycle) {
+                            while (_isCycle)
+                            {
                                 sendMessage(result);
                                 Thread.Sleep(cycleTime.Text.ToString().ToInt32());
-                            } 
+                            }
                         });
                         CycleThread?.Start();
                         _isCycle = true;
                         DisableControls(false);
                         // 将发送选项设置为 disbale
                         sendBtn.Text = "停止发送";
-
-                    } 
+                    }
                     else
                     {
                         sendMessage(result);
                     }
-                    
                 }
             }
-            catch (Exception ex) { 
+            catch (Exception ex)
+            {
                 dataLog.AppendText(ex.ToString());
             }
         }
@@ -193,14 +181,13 @@ namespace SocketHelper
             Invoke(new Action(() =>
             {
                 // ascii 发送
-                if(sendASCII.Checked)
+                if (sendASCII.Checked)
                 {
                     dataLog.AppendText(result.FormatStringLog());
-
-
                     if (agreeType.Text == "TCP Server")
                     {
-                        tcpServer.GetClients().ToList().ForEach(client => {
+                        tcpServer.GetClients().ToList().ForEach(client =>
+                        {
                             client.Send(result);
                         });
                     }
@@ -208,7 +195,6 @@ namespace SocketHelper
                     {
                         tcpClient.Send(result);
                     }
-
                 }
                 else
                 {
@@ -223,7 +209,8 @@ namespace SocketHelper
 
                     if (agreeType.Text == "TCP Server")
                     {
-                        tcpServer.GetClients().ToList().ForEach(client => {
+                        tcpServer.GetClients().ToList().ForEach(client =>
+                        {
                             client.Send(sendBytes);
                         });
                     }
@@ -231,13 +218,10 @@ namespace SocketHelper
                     {
                         tcpClient.Send(sendBytes);
                     }
-
-                   
                 }
                 sendInfo.Text = "";
             }));
         }
-
 
         /// <字符串转16进制格式,不够自动前面补零>
         /// 
@@ -326,7 +310,7 @@ namespace SocketHelper
                 {
                     StartTcpClient();
                 }
-                
+
             }
             catch (Exception exception)
             {
@@ -348,7 +332,8 @@ namespace SocketHelper
             {
                 tcpClient.Connecting += (client, args) =>
                 {
-                    Invoke(new Action(() => {
+                    Invoke(new Action(() =>
+                    {
                         dataLog.AppendText($"{client.IP}:{client.Port} 正在连接服务器".FormatStringLog());
                     }));
 
@@ -357,7 +342,8 @@ namespace SocketHelper
 
                 tcpClient.Connected += (client, args) =>
                 {
-                    Invoke(new Action(() => {
+                    Invoke(new Action(() =>
+                    {
                         dataLog.AppendText($"{client.IP}:{client.Port} 连接服务器成功".FormatStringLog());
                     }));
 
@@ -366,7 +352,8 @@ namespace SocketHelper
 
                 tcpClient.Disconnecting += (client, args) =>
                 {
-                    Invoke(new Action(() => {
+                    Invoke(new Action(() =>
+                    {
                         dataLog.AppendText($"{client.IP}:{client.Port} 连接正在断开".FormatStringLog());
                     }));
 
@@ -374,7 +361,8 @@ namespace SocketHelper
                 };
                 tcpClient.Disconnecting += (client, args) =>
                 {
-                    Invoke(new Action(() => {
+                    Invoke(new Action(() =>
+                    {
                         dataLog.AppendText($"{client.IP}:{client.Port} 连接已经断开".FormatStringLog());
                     }));
 
@@ -390,13 +378,15 @@ namespace SocketHelper
 
                     if (recASCII.Checked)
                     {
-                        Invoke(new Action(() => {
+                        Invoke(new Action(() =>
+                        {
                             dataLog.AppendText($"已经从 {client.IP}:{client.Port} 接收到消息了{msg}".FormatStringLog());
                         }));
                     }
                     else
                     {
-                        Invoke(new Action(() => {
+                        Invoke(new Action(() =>
+                        {
                             dataLog.AppendText($"已经从 {client.IP}:{client.Port} 接收到消息了{string.Join(" ", args.ByteBlock.Buffer.Take(args.ByteBlock.Len).Select(b => b.ToString("X2")))}".FormatStringLog());
                         }));
                     }
@@ -433,13 +423,13 @@ namespace SocketHelper
         /// </summary>
         private void StartTcpServer()
         {
-            if(_isOpen)
+            if (_isOpen)
             {
                 tcpServer.Stop();
                 switchBtn.Text = "打开";
                 ChangeComboxEnable(true);
                 dataLog.AppendText("连接关闭".FormatStringLog());
-            } 
+            }
             else
             {
                 tcpServer.Connecting = (client, args) =>
